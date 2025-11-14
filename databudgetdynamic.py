@@ -168,7 +168,11 @@ arr = patches.FancyArrowPatch((len(events)+0.1, 1), (len(events)+0.1, 1+ZOOM_HEI
                             arrowstyle='|-|,widthA=0.25,widthB=0.25', mutation_scale=20)
 event_ax.add_patch(arr)
 event_ax.annotate(f"{max_rate} MB/S", (.7, .5), xycoords=arr, ha='left', va='center')
+
 # create legend
+legend_handles.append(patches.Patch(color=oh_color, label='Filesystem\nOverhead'))
+legend_handles.append(patches.Patch(color=used_color, label='Used'))
 fig.legend(handles=legend_handles,loc='upper left', bbox_to_anchor=(0,0.9))
 fig.subplots_adjust(left=0.35)
+
 plt.show()
