@@ -148,7 +148,7 @@ for n in range(len(media)):
     usage_ax.add_artist(zoom2)
 
     # title it
-    usage_ax.annotate(med.name, xy=(-0.06,0.5),xycoords='axes fraction', rotation=90, ha='center', va='center', size='large')
+    usage_ax.annotate(med.name, xy=(-0.1,0.5),xycoords='axes fraction', rotation=90, ha='center', va='center', size='large')
 
 # plot event rates
 event_ax : plt.Axes = axes[len(media)]
