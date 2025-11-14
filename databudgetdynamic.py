@@ -9,7 +9,7 @@ OVERVIEW_HEIGHT = 0.4
 ZOOM_HEIGHT = 0.8
 
 colors : list[str] = [
-    "#ccb2dd"
+    "#ccb2dd",
     "#6ebadd",
     "#fcc19c",
     "#a7e8a1"
