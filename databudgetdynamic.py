@@ -119,8 +119,8 @@ for n in range(len(media)):
 
     # create overall memory usage
     usage_ax.axis('off')
-    if med.overhead != 0:
-        usage_ax.barh([1], width=med.overhead, align='center', height=OVERVIEW_HEIGHT, color=oh_color, label='Filesystem Overhead')
+    usage_ax.barh([1], width=med.overhead, align='center', height=OVERVIEW_HEIGHT, color=oh_color, label='Filesystem Overhead')
+    if med.overhead > 0.05:
         usage_ax.annotate(f'{med.overhead:.1f} MB', xy=(med.overhead/2, 1 + OVERVIEW_HEIGHT/2), ha='center', va='bottom')
     usage_ax.barh([1], width=used, left=med.overhead, height=OVERVIEW_HEIGHT, color=used_color)
     usage_ax.annotate(f'{used:.1f} MB', xy=(med.overhead + used/2, 1 + OVERVIEW_HEIGHT/2), ha='center', va='bottom')
@@ -128,10 +128,13 @@ for n in range(len(media)):
 
     # add % used
     percent_used : float = (used+med.overhead)/med.total * 100.0
-    arr = patches.FancyArrowPatch((0, 1+OVERVIEW_HEIGHT+0.4), (med.overhead+used, 1+OVERVIEW_HEIGHT+0.4),
+    if percent_used >= 2.0:
+        arr = patches.FancyArrowPatch((0, 1+OVERVIEW_HEIGHT/2+0.4), (med.overhead+used, 1+OVERVIEW_HEIGHT/2+0.4),
                             arrowstyle='|-|,widthA=0.25,widthB=0.25', mutation_scale=20)
-    usage_ax.add_patch(arr)
-    usage_ax.annotate(f"{percent_used:.1f}% of {med.total:.1f} MB", (.5, 1.0), xycoords=arr, ha='center', va='bottom')
+        usage_ax.add_patch(arr)
+        usage_ax.annotate(f"{percent_used:.1f}% of {med.total:.1f} MB", (.5, 1.0), xycoords=arr, ha='center', va='bottom')
+    else:
+        usage_ax.annotate(f"{percent_used:.1f}%  used of {med.total:.1f} MB", xy=(med.total/2, 1+OVERVIEW_HEIGHT/2), xycoords='data', ha='center', va='bottom')
 
     # used space breakdown
     offset = 0
