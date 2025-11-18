@@ -152,18 +152,18 @@ for n in range(len(media)):
 # plot event rates
 event_ax : plt.Axes = axes[len(media)]
 x_labels = [ev[0] for ev in events]
-y_labels = [med.name for med in media]
+y_labels = reversed([med.name for med in media])
 for n in range(len(events)):
     ev_name, rates = events[n]
     for i in range(len(media)):
         rate = rates[media[i]]
-        event_ax.barh([i], width=1, height=ZOOM_HEIGHT*(rate/max_rate), left=n, color=media[i].color, align='edge')
+        event_ax.barh([len(media)-i-1], width=1, height=ZOOM_HEIGHT*(rate/max_rate), left=n, color=media[i].color, align='edge')
 event_ax.set_xticks(np.arange(len(events)), x_labels)
 event_ax.set_yticks(np.arange(len(media)), y_labels)
 event_ax.spines[['right','top']].set_visible(False)
-event_ax.set_xlim(right=len(events)+0.1)
+event_ax.set_xlim(right=len(events)+0.2)
 event_ax.set_ylim(top=len(media)+1)
-arr = patches.FancyArrowPatch((len(events)+0.1, 1), (len(events)+0.1, 1+ZOOM_HEIGHT),
+arr = patches.FancyArrowPatch((len(events)+0.1, 0), (len(events)+0.1, ZOOM_HEIGHT),
                             arrowstyle='|-|,widthA=0.25,widthB=0.25', mutation_scale=20)
 event_ax.add_patch(arr)
 event_ax.annotate(f"{max_rate} MB/S", (.7, .5), xycoords=arr, ha='left', va='center')
