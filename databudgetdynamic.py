@@ -82,21 +82,17 @@ for n in range(media_count):
     media.append(Medium(name, total_storage, over_head, tuple(sources), this_color))
 
 # get events
-events : list[tuple[str,dict[Medium,float]]] = [('', {})]
-event_count = int(input('Number of events:'))
+events : list[tuple[str,dict[Medium,float]]] = []
+event_count = int(input('Number of events: '))
 max_rate = -1
-print('\tInitial rates:')
-for med in media:
-    rate = float(input(f'\t\t{med.name} (MB/s): '))
-    events[0][1][med] = rate
-    max_rate = max(max_rate, rate)
-for n in range(1, event_count + 1):
-    name = input(f'\tEvent {n} name:')
-    events.append((name, {}))
+for n in range(0, event_count):
+    name = input(f'\tEvent {n+1} name: ')
+    rates : dict[Medium,float] = {}
     for med in media:
         rate = float(input(f'\t\t{med.name} (MB/s): '))
-        events[n][1][med] = rate
+        rates[med] = rate
         max_rate = max(max_rate, rate)
+    events.append((name, rates))
 
 fig : matplotlib.figure.Figure
 fig, (axes) = plt.subplots(
@@ -151,7 +147,7 @@ for n in range(len(media)):
     usage_ax.add_artist(zoom2)
 
     # title it
-    usage_ax.annotate(med.name, xy=(-0.1,0.5),xycoords='axes fraction', rotation=90, ha='center', va='center', size='large')
+    usage_ax.annotate(med.name, xy=(-0.1,0.5), xycoords='axes fraction', rotation=90, ha='center', va='center', size='large')
 
 # plot event rates
 event_ax : plt.Axes = axes[len(media)]
@@ -161,11 +157,11 @@ for n in range(len(events)):
     ev_name, rates = events[n]
     for i in range(len(media)):
         rate = rates[media[i]]
-        event_ax.barh([i+1], width=1, height=ZOOM_HEIGHT*(rate/max_rate), left=n, color=media[i].color, align='edge')
-event_ax.set_xticks(np.arange(0,len(events)), x_labels)
-event_ax.set_yticks(np.arange(1,len(media)+1), y_labels)
+        event_ax.barh([i], width=1, height=ZOOM_HEIGHT*(rate/max_rate), left=n, color=media[i].color, align='edge')
+event_ax.set_xticks(np.arange(len(events)), x_labels)
+event_ax.set_yticks(np.arange(len(media)), y_labels)
 event_ax.spines[['right','top']].set_visible(False)
-event_ax.set_xlim(right=len(events)+0.3)
+event_ax.set_xlim(right=len(events)+0.1)
 event_ax.set_ylim(top=len(media)+1)
 arr = patches.FancyArrowPatch((len(events)+0.1, 1), (len(events)+0.1, 1+ZOOM_HEIGHT),
                             arrowstyle='|-|,widthA=0.25,widthB=0.25', mutation_scale=20)
