@@ -8,7 +8,7 @@ import matplotlib.patches as patches
 OVERVIEW_HEIGHT = 0.4
 ZOOM_HEIGHT = 0.8
 
-colors : list[str] = [
+colors : list[str] = [ # for each storage medium
     "#ccb2dd",
     "#6ebadd",
     "#fcc19c",
@@ -51,33 +51,37 @@ if media_count == -1:
             Source(type='Logs', size=2),
         ))
     ]
-    media_count = 0
+    media_count = 0 # to skip media input loop
     source_colors = {
     "video":"#b886da",
     "sensor data":"#6ebadd",
     "logs":"#fcc19c"
     }
-    for med in media:
+    for med in media: # add media to legend
         legend_handles.append(patches.Patch(color=med.color, label=med.name))
-    for type, color in source_colors.items():
+    for type, color in source_colors.items():  # add sources to legend
         legend_handles.append(patches.Patch(color=color,label=type))
-for n in range(media_count):
+
+for n in range(media_count): # get storage media information
     name = input(f'Medium {n+1} name: ')
     total_storage = float(input('\tTotal capacity (MB): '))
     over_head = float(input('\tFilesystem overhead (MB): '))
     source_count = int(input('\tNumber of data types: '))
     sources : list[Source] = []
-    for m in range(source_count):
+
+    for m in range(source_count): # get source information
         source_name = input(f'\t\tMedium {n+1} Type {m+1} Name: ')
         source_size = float(input('\t\t\tSize (MB): '))
-        if source_name.lower() not in source_colors.keys():
-            source_colors[source_name.lower()] = colors[source_color_index]
+
+        if source_name.lower() not in source_colors.keys(): # if we haven't seen this source before,
+            source_colors[source_name.lower()] = colors[source_color_index] # assign it a color
             legend_handles.append(patches.Patch(color=colors[source_color_index], label=source_name))
             source_color_index = (source_color_index + 1) % len(colors)
             if source_color_index == 0:
                 print('More source types than colors.')
         sources.append(Source(source_name, source_size))
-    this_color = med_colors[n % len(med_colors)]
+
+    this_color = med_colors[n % len(med_colors)] # color for this source
     legend_handles.append(patches.Patch(color=this_color, label=name))
     media.append(Medium(name, total_storage, over_head, tuple(sources), this_color))
 
@@ -85,6 +89,7 @@ for n in range(media_count):
 events : list[tuple[str,dict[Medium,float]]] = []
 event_count = int(input('Number of events: '))
 max_rate = -1
+
 for n in range(0, event_count):
     name = input(f'\tEvent {n+1} name: ')
     rates : dict[Medium,float] = {}
@@ -101,6 +106,7 @@ fig, (axes) = plt.subplots(
     #layout='constrained'
 )
 
+# drawing time
 for n in range(len(media)):
     usage_ax : matplotlib.axes.Axes = axes[n]
     med : Medium = media[n] 
@@ -109,9 +115,6 @@ for n in range(len(media)):
     for s in med.sources:
         used += s.size
     free = med.total - used
-
-    video = 1
-    sensor = 2
 
     # create overall memory usage
     usage_ax.axis('off')
@@ -129,7 +132,7 @@ for n in range(len(media)):
                             arrowstyle='|-|,widthA=0.25,widthB=0.25', mutation_scale=20)
         usage_ax.add_patch(arr)
         usage_ax.annotate(f"{percent_used:.1f}% of {med.total:.1f} MB", (.5, 1.0), xycoords=arr, ha='center', va='bottom')
-    else:
+    else: # don't bother with bracket if too small
         usage_ax.annotate(f"{percent_used:.1f}%  used of {med.total:.1f} MB", xy=(med.total/2, 1+OVERVIEW_HEIGHT/2), xycoords='data', ha='center', va='bottom')
 
     # used space breakdown
