@@ -99,16 +99,21 @@ for n in range(0, event_count):
         max_rate = max(max_rate, rate)
     events.append((name, rates))
 
-fig : matplotlib.figure.Figure
-fig, (axes) = plt.subplots(
-    ncols=1,
-    nrows=len(media)+1,
+fig : matplotlib.figure.Figure = plt.figure()
+subfigs : list[matplotlib.figure.SubFigure] = fig.subfigures(
+    ncols=len(media)+1
+    #wspace=,
     #layout='constrained'
 )
 
 # drawing time
 for n in range(len(media)):
-    usage_ax : matplotlib.axes.Axes = axes[n]
+    current_axes = subfigs[n].subplots(
+        nrows=2,
+        ncols=1,
+        #layout='constrained'
+    )
+    usage_ax : matplotlib.axes.Axes =  current_axes[0]
     med : Medium = media[n] 
 
     used = 0
@@ -153,7 +158,7 @@ for n in range(len(media)):
     usage_ax.annotate(med.name, xy=(-0.1,0.5), xycoords='axes fraction', rotation=90, ha='center', va='center', size='large')
 
 # plot event rates
-event_ax : plt.Axes = axes[len(media)]
+event_ax : plt.Axes = subfigs[len(media)].add_axes([0.1,0.1,0.8,0.8])
 x_labels = [ev[0] for ev in events]
 y_labels = reversed([med.name for med in media])
 for n in range(len(events)):
@@ -175,6 +180,6 @@ event_ax.annotate(f"{max_rate} MB/S", (.7, .5), xycoords=arr, ha='left', va='cen
 legend_handles.append(patches.Patch(color=oh_color, label='Filesystem\nOverhead'))
 legend_handles.append(patches.Patch(color=used_color, label='Used'))
 fig.legend(handles=legend_handles,loc='upper left', bbox_to_anchor=(0,0.9))
-fig.subplots_adjust(left=0.35)
+# fig.subplots_adjust(left=0.35)
 
 plt.show()
