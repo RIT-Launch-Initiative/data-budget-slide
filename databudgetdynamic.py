@@ -69,7 +69,7 @@ if media_count == -1:
         legend_handles.append(patches.Patch(color=color,label=type))
 
 for n in range(media_count): # get storage media information
-    name = input(f'Medium {n+1} name: ')
+    name = input(f'Medium {e+1} name: ')
     total_storage = float(input('\tTotal capacity (MB): '))
     over_head = float(input('\tFilesystem overhead (MB): '))
     source_count = int(input('\tNumber of data types: '))
